@@ -55,6 +55,7 @@ def core(f):
 def tags(k, v):
     # 只比结论（加粗部分）的定性，不比解释里顺带提到的五行
     bold = " ".join(re.findall(r"\*\*(.+?)\*\*", v)) or v
+    bold = re.sub(r"[（(][^）)]*[）)]", "", bold)  # 括号里是解释，不算结论
     if k == "日主": return set(re.findall(r"身旺|身弱|从强|从弱", bold))
     if k == "格局": return set(re.findall(r"([正偏七][官杀财印]|食神|伤官|建禄|羊刃|从\S)格", bold)[:1])
     if k == "当前大运": return set(re.findall(r"大吉|小吉|中吉|吉|平|凶", v)[:1])
