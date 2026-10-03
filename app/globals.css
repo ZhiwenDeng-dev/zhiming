@@ -1,26 +1,233 @@
 @import "tailwindcss";
 
+/* 纸、墨、金：克制的东方极简 */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --paper: #f6f5f2;
+  --card: #ffffff;
+  --ink: #161616;
+  --ink-2: #55524d;
+  --muted: #9a968f;
+  --line: #e7e3dc;
+  --gold: #a88a55;
+  --gold-soft: #efe6d6;
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  :root:not([data-theme="light"]) {
+    --paper: #0f0f0e;
+    --card: #1a1918;
+    --ink: #f1eee8;
+    --ink-2: #bdb8af;
+    --muted: #7d7972;
+    --line: #2b2926;
+    --gold: #c7a76d;
+    --gold-soft: #2a2419;
   }
 }
 
+@theme inline {
+  --color-paper: var(--paper);
+  --color-card: var(--card);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-gold: var(--gold);
+  --color-gold-soft: var(--gold-soft);
+  --font-sans: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  --font-serif: "Songti SC", "STSong", "Noto Serif SC", "Source Han Serif SC", serif;
+}
+
+html {
+  -webkit-tap-highlight-color: transparent;
+}
+
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-sans);
+}
+
+/* 报告正文排版 */
+.prose-zm {
+  font-size: 16px;
+  line-height: 1.9;
+  color: var(--ink-2);
+}
+.prose-zm h2 {
+  font-family: var(--font-serif);
+  font-size: 22px;
+  color: var(--ink);
+  margin: 1.6em 0 0.6em;
+  font-weight: 600;
+}
+.prose-zm h3 {
+  font-family: var(--font-serif);
+  font-size: 18px;
+  color: var(--ink);
+  margin: 1.8em 0 0.5em;
+  font-weight: 600;
+}
+.prose-zm h3::before {
+  content: "";
+  display: inline-block;
+  width: 3px;
+  height: 0.9em;
+  background: var(--gold);
+  margin-right: 10px;
+  vertical-align: -0.08em;
+}
+.prose-zm p {
+  margin: 0.8em 0;
+}
+.prose-zm strong {
+  color: var(--ink);
+  font-weight: 600;
+}
+.prose-zm ul,
+.prose-zm ol {
+  margin: 0.6em 0;
+  padding-left: 1.3em;
+}
+.prose-zm ul {
+  list-style: disc;
+}
+.prose-zm ol {
+  list-style: decimal;
+}
+.prose-zm li {
+  margin: 0.3em 0;
+}
+.prose-zm li::marker {
+  color: var(--gold);
+}
+.prose-zm blockquote {
+  border-left: 2px solid var(--gold);
+  padding: 2px 0 2px 14px;
+  margin: 1em 0;
+  font-family: var(--font-serif);
+  color: var(--ink);
+}
+.prose-zm table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  margin: 1em 0;
+}
+.prose-zm th,
+.prose-zm td {
+  border-bottom: 1px solid var(--line);
+  padding: 8px 6px;
+  text-align: left;
+}
+.prose-zm em {
+  color: var(--muted);
+}
+.prose-zm > :first-child {
+  margin-top: 0;
+}
+
+/* 流式输出时的光标 */
+.caret::after,
+.streaming > :last-child::after {
+  content: "";
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  background: var(--gold);
+  margin-left: 2px;
+  vertical-align: -0.15em;
+  animation: blink 1s steps(2) infinite;
+}
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.rise {
+  animation: rise 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+@keyframes flip {
+  0% {
+    transform: rotateY(0) translateY(0);
+  }
+  50% {
+    transform: rotateY(900deg) translateY(-40px);
+  }
+  100% {
+    transform: rotateY(1800deg) translateY(0);
+  }
+}
+.coin-flip {
+  animation: flip 0.9s cubic-bezier(0.3, 0.7, 0.4, 1) both;
+}
+
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* 推算动画 */
+@keyframes zm-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.zm-spin,
+.zm-spin-rev {
+  transform-box: view-box;
+  transform-origin: 72px 72px;
+  animation: zm-spin 10s linear infinite;
+}
+.zm-spin-rev {
+  animation-direction: reverse;
+}
+@keyframes zm-breathe {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: scale(0.92);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.06);
+  }
+}
+.zm-breathe {
+  animation: zm-breathe 2.6s ease-in-out infinite;
+}
+@keyframes zm-shimmer {
+  0%,
+  100% {
+    opacity: 0.55;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+.zm-shimmer {
+  animation: zm-shimmer 2s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .zm-spin,
+  .zm-spin-rev,
+  .zm-breathe,
+  .zm-shimmer {
+    animation: none;
+  }
 }
